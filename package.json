@@ -1,0 +1,21 @@
+{
+  "name": "verdikt",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AI-verified outcome oracle for X Layer Exchange OS outcome markets",
+  "workspaces": [
+    "contracts",
+    "oracle-engine",
+    "web"
+  ],
+  "scripts": {
+    "contracts:compile": "npm run compile --workspace=contracts",
+    "contracts:test": "npm run test --workspace=contracts",
+    "contracts:deploy:testnet": "npm run deploy:testnet --workspace=contracts",
+    "engine:dev": "npm run dev --workspace=oracle-engine",
+    "web:dev": "npm run dev --workspace=web"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
