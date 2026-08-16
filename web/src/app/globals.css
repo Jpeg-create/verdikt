@@ -344,25 +344,14 @@ dt {
 .site-header__brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
-.brand-mark {
-  width: 22px;
-  height: 22px;
-  border: 1.5px solid var(--accent);
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.brand-mark::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 1px;
+/* The mark carries its own transparent margin, so it sets height and keeps ratio. */
+.brand-logo {
+  height: 28px;
+  width: auto;
+  flex-shrink: 0;
 }
 
 .brand-name {

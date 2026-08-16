@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const NAV_LINKS = [
   { href: "#how", label: "How it works" },
   { href: "#console", label: "Console" },
@@ -9,7 +11,14 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="site-header__brand">
-        <span className="brand-mark" aria-hidden="true" />
+        <Image
+          className="brand-logo"
+          src="/verdikt-logo.png"
+          alt=""
+          width={1536}
+          height={1024}
+          priority
+        />
         <span className="brand-name">Verdikt</span>
         <span className="brand-tag">X Layer · Exchange OS</span>
       </div>
