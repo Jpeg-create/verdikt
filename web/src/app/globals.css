@@ -611,7 +611,7 @@ dt {
 
 .float-card--flow {
   left: 80.5%;
-  top: 33%;
+  top: 34%;
   width: 19.3%;
 }
 
@@ -1672,21 +1672,85 @@ dt {
   }
 }
 
+/* Phone tier: the same composition — badges anchored to the artwork's wire nodes
+   — rebuilt at a smaller scale. The render shrinks, the badges lose a size step,
+   and the box is proportioned so the artwork's bottom edge is its bottom edge. */
 @media (max-width: 560px) {
   .hero__eyebrow {
     white-space: normal;
   }
 
-  .float-card {
-    display: none;
+  .hero__figure {
+    aspect-ratio: 1.55;
   }
 
   .oracle-render {
-    position: static;
-    width: 100%;
+    left: 21%;
+    top: 40%;
+    width: 58%;
   }
 
-  .hero__figure {
-    aspect-ratio: auto;
+  .float-card {
+    border-radius: 5px;
+    padding: 2cqw 2.2cqw 2.4cqw;
+  }
+
+  .float-card--engine {
+    left: 31%;
+    top: 13.4%;
+    width: 38%;
+    padding: 1.9cqw 2.4cqw 2.2cqw;
+  }
+
+  .float-card--evidence {
+    left: 1.4%;
+    top: 32.5%;
+    width: 24%;
+  }
+
+  .float-card--flow {
+    left: 74%;
+    top: 38.5%;
+    width: 24%;
+  }
+
+  .float-card__title {
+    font-size: clamp(5.5px, 1.7cqw, 7.5px);
+    letter-spacing: 0.06em;
+    padding-bottom: 1.5cqw;
+    margin-bottom: 1.7cqw;
+  }
+
+  .float-card__rows {
+    gap: 1.2cqw;
+    font-size: clamp(6px, 2.1cqw, 8.5px);
+  }
+
+  .float-card__list {
+    gap: 1.8cqw;
+  }
+
+  .float-card__list li {
+    gap: 1.5cqw;
+    font-size: clamp(6px, 1.95cqw, 8px);
+  }
+
+  .float-card__icon {
+    width: clamp(7px, 2.6cqw, 10px);
+    height: clamp(7px, 2.6cqw, 10px);
+  }
+
+  .float-card__stem {
+    height: 4cqw;
+  }
+
+  .float-card__feed {
+    width: 5cqw;
+  }
+
+  .flow-dot {
+    width: clamp(5px, 1.9cqw, 7px);
+    height: clamp(5px, 1.9cqw, 7px);
+    border-width: 1px;
   }
 }
