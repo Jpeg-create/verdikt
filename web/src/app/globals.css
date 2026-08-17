@@ -571,7 +571,9 @@ dt {
   width: 100%;
   max-width: 760px;
   justify-self: end;
-  aspect-ratio: 1.376;
+  /* Matches the render (1536×1024) inset at 30% top / 70.5% width, so the box
+     ends exactly on the artwork's bottom edge and badge offsets stay truthful. */
+  aspect-ratio: 1.5;
 }
 
 .oracle-render {
@@ -595,21 +597,21 @@ dt {
 }
 
 .float-card--engine {
-  left: 30%;
-  top: 7%;
+  left: 35%;
+  top: 11%;
   width: 32%;
   padding: 1.5cqw 2cqw 1.9cqw;
 }
 
 .float-card--evidence {
   left: 3%;
-  top: 21%;
+  top: 24.5%;
   width: 18.5%;
 }
 
 .float-card--flow {
-  left: 67%;
-  top: 27%;
+  left: 80.5%;
+  top: 33%;
   width: 19.3%;
 }
 
