@@ -30,28 +30,33 @@ threshold questions, e.g. "was BTC ≥ $100k at time T").
 
 ## Proof: deployed on X Layer testnet
 
+Live: [verdikt-oracle.vercel.app](https://verdikt-oracle.vercel.app) — the
+"Live on X Layer testnet" section reads these contracts directly and lets you
+stake real testnet OKB into a live sandbox market.
+
 | Contract | Address | Explorer |
 |---|---|---|
-| `VerdiktOracle` | _pending deploy_ | — |
-| `DemoOutcomeMarket` | _pending deploy_ | — |
+| `VerdiktOracle` | `0x073894D882A47b437d59E2FB89B40Cab2f0E2B38` | [view](https://www.okx.com/web3/explorer/xlayer-test/address/0x073894D882A47b437d59E2FB89B40Cab2f0E2B38) |
+| `DemoOutcomeMarket` | `0x956b1B3A5b6043F6bc71DB6f4fa26cBaa7B8b6BA` | [view](https://www.okx.com/web3/explorer/xlayer-test/address/0x956b1B3A5b6043F6bc71DB6f4fa26cBaa7B8b6BA) |
 
 | Flow | Tx | Explorer |
 |---|---|---|
-| Question created | _pending_ | — |
-| Resolution proposed | _pending_ | — |
-| Finalized | _pending_ | — |
-| Market settled + claimed | _pending_ | — |
+| Question created | `0x73948bf6ef82c8f73813dbab71202c1b18c8cd8b3a661d95c8997197be47650b` | [view](https://www.okx.com/web3/explorer/xlayer-test/tx/0x73948bf6ef82c8f73813dbab71202c1b18c8cd8b3a661d95c8997197be47650b) |
+| Resolution proposed | `0x6776c48cac2219a4ec23e3404450195a25908c6948303535b59c2f76715c1e03` | [view](https://www.okx.com/web3/explorer/xlayer-test/tx/0x6776c48cac2219a4ec23e3404450195a25908c6948303535b59c2f76715c1e03) |
+| Finalized | `0xe9c3894e9c431faa562547298a31ae9441debf13bf552f0cd27d5b2a15078938` | [view](https://www.okx.com/web3/explorer/xlayer-test/tx/0xe9c3894e9c431faa562547298a31ae9441debf13bf552f0cd27d5b2a15078938) |
+| Market settled | `0xf399c321043d73024c8ef0548133fddd73b5e5522c61f0872757133833f4f2ba` | [view](https://www.okx.com/web3/explorer/xlayer-test/tx/0xf399c321043d73024c8ef0548133fddd73b5e5522c61f0872757133833f4f2ba) |
+| Payout claimed | `0xae8371c58aa1007e35978db3a942500fdf6a370aa2d9a1a8df2d14619abcc4b2` | [view](https://www.okx.com/web3/explorer/xlayer-test/tx/0xae8371c58aa1007e35978db3a942500fdf6a370aa2d9a1a8df2d14619abcc4b2) |
 
-This table gets filled in once the contracts are live on X Layer testnet
-(see `contracts/scripts/deploy.ts`). Until then, the full lifecycle is
-verified against a local EVM — details in Status below.
+Full lifecycle (question created, staked, proposed, dispute window,
+finalized, settled, claimed) run end to end against real testnet contracts,
+not just a local EVM.
 
 ## Repo layout (monorepo)
 
 verdikt/
 contracts/ Solidity contracts (oracle + demo consumer), Hardhat config, deploy scripts
 oracle-engine/ TypeScript backend: evidence gathering, AI resolution (DeepSeek), on-chain submission
-web/ React/Vite frontend demo — create a mock market, watch it resolve, see payout
+web/ Next.js frontend — simulated resolution console, plus a live section reading real contracts and accepting real stakes
 
 
 ## Stack
@@ -59,8 +64,8 @@ web/ React/Vite frontend demo — create a mock market, watch it resolve, see pa
 Contracts run on Solidity and Hardhat, deployed first to X Layer testnet
 (chain 1952) and then mainnet (chain 196). The resolution engine is Node.js
 and TypeScript, calling DeepSeek's API for the actual verification pass. The
-frontend is React, Vite, and TypeScript, and chain interaction goes through
-viem.
+frontend is Next.js, React, and TypeScript, and chain interaction goes through
+viem and wagmi.
 
 ## Quickstart
 
@@ -109,8 +114,8 @@ Status below for where that stands.
 ## Status
 
 Contracts: written, compiled, and verified end to end (happy path and
-dispute path, correct payout math) against a local EVM. X Layer testnet
-deployment is in progress.
+dispute path, correct payout math) against a local EVM, and the full
+lifecycle has now run end to end on X Layer testnet — see Proof above.
 
 Oracle engine: the evidence → AI verdict → chain-submission pipeline runs
 end to end in mock mode. Real sports and crypto evidence sources are next.

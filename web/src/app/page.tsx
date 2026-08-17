@@ -1,3 +1,4 @@
+import { LiveOnChain } from "../components/console/LiveOnChain";
 import { ResolutionConsole } from "../components/console/ResolutionConsole";
 import { SiteFooter } from "../components/layout/SiteFooter";
 import { SiteHeader } from "../components/layout/SiteHeader";
@@ -19,6 +20,7 @@ export default function Page() {
           <WhyThirdParty />
           <HowItWorks />
           <ResolutionConsole />
+          <LiveOnChain />
           <Guarantees />
           <Architecture />
           <Faq />

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { IBM_Plex_Mono, Source_Serif_4, Space_Grotesk } from "next/font/google";
+import { Web3Provider } from "../components/providers/Web3Provider";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -35,7 +36,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="en"
       className={`${spaceGrotesk.variable} ${sourceSerif.variable} ${ibmPlexMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <Web3Provider>{children}</Web3Provider>
+      </body>
     </html>
   );
 }
