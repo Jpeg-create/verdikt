@@ -565,22 +565,44 @@ dt {
   margin-top: 2px;
 }
 
+/* --------------------------------------------------------------------------
+   Hero figure — one coordinate system, every viewport
+
+   The box is 3:2, the render's own ratio (1536×1024), and the render is centred
+   in it at 64% width. The remaining margin is what the badges sit in. Because a
+   3:2 render inside a 3:2 box covers the same fraction of the box on both axes,
+   a single factor maps artwork space to box space:
+
+       x% = 18 + 64 · fx          y% = 36 + 64 · fy
+
+   where (fx, fy) are fractions of the render itself. Anchors measured off the
+   PNG's alpha silhouette:
+
+       cube        fx 0.312–0.684 (centre 0.498) · fy 0.19–0.62
+       wire nodes  fx 0.075 / 0.925 · fan fy 0.15–0.57 (centre 0.36)
+
+   which resolve to: cube centre x 49.9%, cube top y 48.2%, node columns
+   x 22.8% / 77.2%, node fan centre y 59%.
+
+   Every value below is % or cqw, so the whole composition scales as one unit
+   from 1600px down to 320px with no breakpoint overrides. Only the badges'
+   internal type and spacing change with width, via clamp(), for legibility.
+   -------------------------------------------------------------------------- */
+
 .hero__figure {
   position: relative;
   container-type: inline-size;
   width: 100%;
   max-width: 760px;
   justify-self: end;
-  /* Matches the render (1536×1024) inset at 30% top / 70.5% width, so the box
-     ends exactly on the artwork's bottom edge and badge offsets stay truthful. */
   aspect-ratio: 1.5;
 }
 
 .oracle-render {
   position: absolute;
-  left: 15.8%;
-  top: 30%;
-  width: 70.5%;
+  left: 18%;
+  top: 36%;
+  width: 64%;
   height: auto;
   z-index: 2;
 }
@@ -596,28 +618,31 @@ dt {
   padding: 1.7cqw 1.9cqw 2cqw;
 }
 
+/* Centred on the cube's axis (x 49.9%); its stem drops onto the cube's top. */
 .float-card--engine {
-  left: 35%;
-  top: 11%;
-  width: 32%;
+  left: 31.9%;
+  top: 15.5%;
+  width: 36%;
   padding: 1.5cqw 2cqw 1.9cqw;
 }
 
+/* Right edge on the left node column (x 22.8%), rows across the wire fan. */
 .float-card--evidence {
-  left: 3%;
-  top: 24.5%;
-  width: 18.5%;
+  left: 1.2%;
+  top: 32%;
+  width: 22%;
 }
 
+/* Left edge on the right node column (x 77.2%), mirroring the evidence card. */
 .float-card--flow {
-  left: 80.5%;
-  top: 34%;
-  width: 19.3%;
+  left: 76.7%;
+  top: 40.3%;
+  width: 23%;
 }
 
 .float-card__title {
   font-family: var(--font-mono);
-  font-size: clamp(9px, 1.45cqw, 10.5px);
+  font-size: clamp(6px, 1.45cqw, 10.5px);
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--accent);
@@ -634,7 +659,7 @@ dt {
   display: flex;
   flex-direction: column;
   gap: 0.9cqw;
-  font-size: clamp(10px, 1.89cqw, 13px);
+  font-size: clamp(6.5px, 1.89cqw, 13px);
 }
 
 .float-card__rows > div {
@@ -671,14 +696,14 @@ dt {
   display: flex;
   align-items: center;
   gap: 1.3cqw;
-  font-size: clamp(10px, 1.74cqw, 13px);
+  font-size: clamp(6.5px, 1.74cqw, 13px);
   line-height: 1.35;
   color: var(--text);
 }
 
 .float-card__icon {
-  width: clamp(13px, 2.45cqw, 18px);
-  height: clamp(13px, 2.45cqw, 18px);
+  width: clamp(8px, 2.45cqw, 18px);
+  height: clamp(8px, 2.45cqw, 18px);
   flex-shrink: 0;
   color: var(--accent);
 }
@@ -701,8 +726,8 @@ dt {
 }
 
 .flow-dot {
-  width: clamp(9px, 1.75cqw, 12px);
-  height: clamp(9px, 1.75cqw, 12px);
+  width: clamp(6px, 1.75cqw, 12px);
+  height: clamp(6px, 1.75cqw, 12px);
   flex-shrink: 0;
   border-radius: 50%;
   border: 1.5px solid var(--flow-dot);
@@ -1672,85 +1697,8 @@ dt {
   }
 }
 
-/* Phone tier: the same composition — badges anchored to the artwork's wire nodes
-   — rebuilt at a smaller scale. The render shrinks, the badges lose a size step,
-   and the box is proportioned so the artwork's bottom edge is its bottom edge. */
 @media (max-width: 560px) {
   .hero__eyebrow {
     white-space: normal;
-  }
-
-  .hero__figure {
-    aspect-ratio: 1.55;
-  }
-
-  .oracle-render {
-    left: 21%;
-    top: 40%;
-    width: 58%;
-  }
-
-  .float-card {
-    border-radius: 5px;
-    padding: 2cqw 2.2cqw 2.4cqw;
-  }
-
-  .float-card--engine {
-    left: 31%;
-    top: 13.4%;
-    width: 38%;
-    padding: 1.9cqw 2.4cqw 2.2cqw;
-  }
-
-  .float-card--evidence {
-    left: 1.4%;
-    top: 32.5%;
-    width: 24%;
-  }
-
-  .float-card--flow {
-    left: 74%;
-    top: 38.5%;
-    width: 24%;
-  }
-
-  .float-card__title {
-    font-size: clamp(5.5px, 1.7cqw, 7.5px);
-    letter-spacing: 0.06em;
-    padding-bottom: 1.5cqw;
-    margin-bottom: 1.7cqw;
-  }
-
-  .float-card__rows {
-    gap: 1.2cqw;
-    font-size: clamp(6px, 2.1cqw, 8.5px);
-  }
-
-  .float-card__list {
-    gap: 1.8cqw;
-  }
-
-  .float-card__list li {
-    gap: 1.5cqw;
-    font-size: clamp(6px, 1.95cqw, 8px);
-  }
-
-  .float-card__icon {
-    width: clamp(7px, 2.6cqw, 10px);
-    height: clamp(7px, 2.6cqw, 10px);
-  }
-
-  .float-card__stem {
-    height: 4cqw;
-  }
-
-  .float-card__feed {
-    width: 5cqw;
-  }
-
-  .flow-dot {
-    width: clamp(5px, 1.9cqw, 7px);
-    height: clamp(5px, 1.9cqw, 7px);
-    border-width: 1px;
   }
 }
