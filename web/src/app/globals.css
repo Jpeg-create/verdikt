@@ -470,8 +470,17 @@ dt {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
   gap: 48px;
-  align-items: center;
+  align-items: stretch;
   padding: 70px 0 46px;
+}
+
+/* Stretches to the figure column's height and pins the headline/eyebrow/lede
+   block to the bottom, so the lede lines up with the highlight row and the
+   headline lines up with the top of the figure. */
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .hero__headline {
@@ -484,6 +493,7 @@ dt {
 }
 
 .hero__accent {
+  display: block;
   font-style: italic;
   font-weight: 400;
   color: var(--accent);
@@ -542,6 +552,70 @@ dt {
   flex-wrap: wrap;
   gap: 30px;
   margin-top: 34px;
+}
+
+/* Highlights moved out from under the copy to under the figure, so the copy
+   column stays short and the two columns' content weight balances out. This
+   wrapper wraps hero__figure + hero__highlights so they stack as one unit
+   inside the grid's second column. */
+.hero__figure-col {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  /* Without this, the nowrap pill row's min-content width forces the grid
+     track wider than its share of .hero, overflowing the page instead of
+     the grid collapsing to one column at narrower widths. */
+  min-width: 0;
+  container-type: inline-size;
+}
+
+/* Compact, single-row variant of hero__highlights for the space under the
+   figure (narrower than the copy column). Sized in cqw off hero__figure-col
+   itself (not hero__figure's badge coordinate system) so it scales smoothly
+   with the column from 1600px down to the 320px single-column layout,
+   matching this file's existing continuous-scaling convention. */
+.hero__highlights--under-figure {
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: clamp(6px, 2.6cqw, 14px);
+  margin-top: 0;
+}
+
+.hero__highlights--under-figure li {
+  gap: clamp(5px, 1.8cqw, 8px);
+}
+
+.hero__highlights--under-figure .icon-badge {
+  width: clamp(20px, 6.5cqw, 27px);
+  height: clamp(20px, 6.5cqw, 27px);
+  padding: clamp(4px, 1.6cqw, 6px);
+}
+
+.hero__highlights--under-figure .hero__highlight-title {
+  font-size: clamp(10.5px, 3.1cqw, 14px);
+  white-space: nowrap;
+}
+
+.hero__highlights--under-figure .hero__highlight-detail {
+  font-size: clamp(9px, 2.4cqw, 11.5px);
+  white-space: nowrap;
+}
+
+/* Below this, even minimum-comfortable sizing can't fit three detailed
+   pills on one line — fall back to a centered wrap (2 pills, then 1) rather
+   than overflow. Threshold is on hero__figure-col's own inline size via the
+   container-type set above it, not the viewport, so it also self-corrects
+   if the figure's proportions ever change. */
+@container (max-width: 560px) {
+  .hero__highlights--under-figure {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .hero__highlights--under-figure .hero__highlight-title,
+  .hero__highlights--under-figure .hero__highlight-detail {
+    white-space: normal;
+  }
 }
 
 .hero__highlights li {
@@ -715,6 +789,48 @@ dt {
   width: 1px;
   height: 3.6cqw;
   background: linear-gradient(180deg, var(--accent-line), transparent);
+  overflow: visible;
+}
+
+/* A glowing pulse running from the engine badge down to the cube. */
+.float-card__stem::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px 1px var(--accent);
+  opacity: 0;
+  animation: pulse-travel-down 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes pulse-travel-down {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-card__stem::after {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 .float-card__feed {

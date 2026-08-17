@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CountUpNumber } from "../CountUpNumber";
 import { Icon, type IconName } from "../Icon";
 
 const HIGHLIGHTS: { icon: IconName; title: string; detail: string }[] = [
@@ -6,6 +7,11 @@ const HIGHLIGHTS: { icon: IconName; title: string; detail: string }[] = [
     icon: "shield-check",
     title: "Evidence-backed",
     detail: "Multiple independent sources",
+  },
+  {
+    icon: "gauge",
+    title: "Confidence-scored",
+    detail: "Outcome, score, justification",
   },
   {
     icon: "link",
@@ -50,13 +56,76 @@ export function Hero() {
         </p>
 
         <p className="hero__lede">
-          Verdikt turns a plain-language market question into an evidence-backed resolution —
-          outcome, confidence score and written justification — then proposes it on-chain through a
-          dispute-windowed finalize. Built as a designated third-party oracle provider for X Layer's
-          Exchange OS outcome markets.
+          Verdikt turns a plain-language market question into a verifiable on-chain verdict — not
+          a black-box yes/no.
         </p>
+      </div>
 
-        <ul className="hero__highlights">
+      <div className="hero__figure-col">
+        <div className="hero__figure">
+          <Image
+            className="oracle-render"
+            src="/oracle-render.png"
+            alt="A verified verdict sealed in a cube, fed by independent evidence sources"
+            width={1536}
+            height={1024}
+            sizes="(max-width: 900px) 90vw, 40vw"
+            priority
+          />
+
+          <div className="float-card float-card--engine">
+            <p className="float-card__title float-card__title--centered">AI resolution engine</p>
+            <dl className="float-card__rows">
+              <div>
+                <dt>Outcome</dt>
+                <dd className="is-positive">WIN</dd>
+              </div>
+              <div>
+                <dt>Confidence</dt>
+                <dd className="is-positive">
+                  <CountUpNumber target={92} suffix="%" />
+                </dd>
+              </div>
+              <div>
+                <dt>Justification</dt>
+                <dd className="is-accent">View</dd>
+              </div>
+            </dl>
+            <span className="float-card__stem" aria-hidden="true" />
+          </div>
+
+          <div className="float-card float-card--evidence">
+            <p className="float-card__title">Evidence sources</p>
+            <ul className="float-card__list">
+              {EVIDENCE_SOURCES.map((source) => (
+                <li key={source.label}>
+                  <span className="float-card__icon">
+                    <Icon name={source.icon} />
+                  </span>
+                  {source.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="float-card float-card--flow">
+            <span className="float-card__feed" aria-hidden="true" />
+            <p className="float-card__title float-card__title--centered">On-chain flow</p>
+            <ul className="float-card__list">
+              {ON_CHAIN_FLOW.map((step) => (
+                <li key={step.label}>
+                  <span
+                    className={step.settled ? "flow-dot flow-dot--settled" : "flow-dot"}
+                    aria-hidden="true"
+                  />
+                  {step.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <ul className="hero__highlights hero__highlights--under-figure">
           {HIGHLIGHTS.map((highlight) => (
             <li key={highlight.title}>
               <span className="icon-badge">
@@ -69,67 +138,6 @@ export function Hero() {
             </li>
           ))}
         </ul>
-      </div>
-
-      <div className="hero__figure">
-        <Image
-          className="oracle-render"
-          src="/oracle-render.png"
-          alt="A verified verdict sealed in a cube, fed by independent evidence sources"
-          width={1536}
-          height={1024}
-          sizes="(max-width: 900px) 90vw, 40vw"
-          priority
-        />
-
-        <div className="float-card float-card--engine">
-          <p className="float-card__title float-card__title--centered">AI resolution engine</p>
-          <dl className="float-card__rows">
-            <div>
-              <dt>Outcome</dt>
-              <dd className="is-positive">WIN</dd>
-            </div>
-            <div>
-              <dt>Confidence</dt>
-              <dd className="is-positive">92%</dd>
-            </div>
-            <div>
-              <dt>Justification</dt>
-              <dd className="is-accent">View</dd>
-            </div>
-          </dl>
-          <span className="float-card__stem" aria-hidden="true" />
-        </div>
-
-        <div className="float-card float-card--evidence">
-          <p className="float-card__title">Evidence sources</p>
-          <ul className="float-card__list">
-            {EVIDENCE_SOURCES.map((source) => (
-              <li key={source.label}>
-                <span className="float-card__icon">
-                  <Icon name={source.icon} />
-                </span>
-                {source.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="float-card float-card--flow">
-          <span className="float-card__feed" aria-hidden="true" />
-          <p className="float-card__title float-card__title--centered">On-chain flow</p>
-          <ul className="float-card__list">
-            {ON_CHAIN_FLOW.map((step) => (
-              <li key={step.label}>
-                <span
-                  className={step.settled ? "flow-dot flow-dot--settled" : "flow-dot"}
-                  aria-hidden="true"
-                />
-                {step.label}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
   );
