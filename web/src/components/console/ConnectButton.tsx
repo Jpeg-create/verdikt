@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { useEnsureChain } from "../../hooks/useEnsureChain";
 
@@ -13,10 +14,22 @@ export function ConnectButton() {
   const { disconnect } = useDisconnect();
   const { ensureChain, isWrongChain } = useEnsureChain();
 
-  const injectedConnector = connectors[0];
-  const hasInjectedWallet = typeof window !== "undefined" && Boolean(window.ethereum);
+  // window.ethereum can be injected synchronously before hydration, so reading it
+  // directly during render would mismatch the server markup. Defer to an effect.
+  const [hasLegacyProvider, setHasLegacyProvider] = useState(false);
+  useEffect(() => {
+    setHasLegacyProvider(Boolean(window.ethereum));
+  }, []);
 
-  if (!hasInjectedWallet) {
+  // EIP-6963 wallets (OKX, MetaMask, etc.) announce themselves and get a connector
+  // id equal to their rdns, independent of window.ethereum. wagmi's bare injected()
+  // fallback always has id "injected" and only works if a wallet claimed that slot,
+  // so prefer an announced wallet and only fall back to it when window.ethereum exists.
+  const announcedConnector = connectors.find((c) => c.id !== "injected");
+  const fallbackConnector = hasLegacyProvider ? connectors.find((c) => c.id === "injected") : undefined;
+  const walletConnector = announcedConnector ?? fallbackConnector;
+
+  if (!walletConnector) {
     return (
       <a
         className="button button--ghost button--block"
@@ -36,7 +49,7 @@ export function ConnectButton() {
           type="button"
           className="button button--primary button--block"
           disabled={isPending}
-          onClick={() => connect({ connector: injectedConnector })}
+          onClick={() => connect({ connector: walletConnector })}
         >
           {isPending ? "Connecting…" : "Connect wallet →"}
         </button>
