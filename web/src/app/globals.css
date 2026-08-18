@@ -916,7 +916,7 @@ dt {
 .step-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .step-card {
@@ -1054,8 +1054,9 @@ dt {
 
 .faq-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 26px 44px;
+  overflow-x: hidden;
 }
 
 .faq-item {
@@ -1130,9 +1131,12 @@ dt {
 
 .console__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
   gap: 18px;
   align-items: start;
+  /* min() inside minmax() clamps the rendered track fine on its own, but
+     the pre-clamp 340px still leaks into the page's scrollable width. */
+  overflow-x: hidden;
 }
 
 .console__column {
@@ -1806,16 +1810,53 @@ dt {
 
   .closing-cta {
     padding: 24px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .closing-cta__actions {
+    justify-content: center;
+  }
+
+  .site-footer {
+    justify-content: center;
+    text-align: center;
   }
 
   .site-footer__col--end {
-    text-align: left;
+    text-align: center;
+  }
+
+  /* Short, single-focus text centers; multi-line body copy and card/FAQ
+     lists stay left so they still read line by line. */
+  .hero__headline,
+  .hero__lede,
+  .hero__eyebrow,
+  .rationale__quote,
+  .rationale__quote .eyebrow {
+    text-align: center;
+  }
+
+  .hero__eyebrow {
+    justify-content: center;
+  }
+
+  .hero__rule {
+    display: none;
   }
 }
 
 @media (max-width: 560px) {
   .hero__eyebrow {
     white-space: normal;
+  }
+}
+
+/* Below ~350px the demo flag pushes past the viewport edge; the nav is
+   already hidden by here, so this is the last thing left to give up. */
+@media (max-width: 400px) {
+  .demo-flag {
+    display: none;
   }
 }
 
