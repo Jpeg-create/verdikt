@@ -108,8 +108,10 @@ claim lifecycle, plus the path where a dispute freezes finalization, both
 pass against a local EVM with correct payout math. That's not the same as
 an audit.
 
-Real sports and crypto evidence sources are still being wired in — see
-Status below for where that stands.
+Real sports evidence is now live via two independent free sources —
+TheSportsDB and football-data.org (both return real final scores, and the
+resolution engine cross-checks them). Crypto evidence is live via CoinGecko
++ Binance public price feeds. See `oracle-engine/src/evidence/` for both.
 
 ## Status
 
@@ -118,4 +120,7 @@ dispute path, correct payout math) against a local EVM, and the full
 lifecycle has now run end to end on X Layer testnet — see Proof above.
 
 Oracle engine: the evidence → AI verdict → chain-submission pipeline runs
-end to end in mock mode. Real sports and crypto evidence sources are next.
+end to end in live mode with real evidence. Sports outcomes resolve via two
+independent free sources (TheSportsDB + football-data.org), crypto thresholds
+via CoinGecko + Binance public price feeds. Both are keyless or free-tier, so
+the engine runs without paid subscriptions.

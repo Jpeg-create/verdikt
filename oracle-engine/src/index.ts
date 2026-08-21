@@ -37,8 +37,8 @@ async function runResolutionCycle(question: MarketQuestion) {
 const sampleSportsQuestion: MarketQuestion = {
   marketId: "0x" + "1".repeat(64),
   category: "sports",
-  questionText: "Did Team A win Match X on 2026-08-20?",
-  resolutionCriteria: "Resolves YES if Team A wins per official match result.",
+  questionText: "Did CR Flamengo beat Cruzeiro EC on 2026-08-20?",
+  resolutionCriteria: "Resolves YES if Flamengo won per official match result.",
   resolveBy: Math.floor(Date.now() / 1000),
 };
 

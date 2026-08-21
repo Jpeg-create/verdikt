@@ -27,6 +27,9 @@ export const config = {
   evidence: {
     sportsApiKey: process.env.SPORTS_DATA_API_KEY ?? "",
     cryptoApiKey: process.env.CRYPTO_PRICE_API_KEY ?? "",
+    // football-data.org free tier (TIER_ONE) — second independent sports
+    // evidence source, keyed in .env. TheSportsDB is the other (free default).
+    footballDataApiKey: process.env.FOOTBALL_DATA_API_KEY ?? "",
   },
   // Mock mode is the default so the project is runnable/demo-able with zero
   // credentials — flip to false once real keys and a funded resolver wallet
