@@ -8,3 +8,5 @@ cache/
 artifacts/
 typechain-types/
 .DS_Store
+.vercel
+.env*

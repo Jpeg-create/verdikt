@@ -124,3 +124,10 @@ end to end in live mode with real evidence. Sports outcomes resolve via two
 independent free sources (TheSportsDB + football-data.org), crypto thresholds
 via CoinGecko + Binance public price feeds. Both are keyless or free-tier, so
 the engine runs without paid subscriptions.
+
+Resolution accuracy was smoke-tested against real settled fixtures: correct
+verdicts on wins phrased either way ("Did A beat B?" and "Did B beat A?"
+resolve to opposite outcomes from the same fixture), a distinct-club control
+(Manchester United vs Arsenal did not cross-match Manchester City), and
+confidence that tracks evidence (99% with two agreeing sources, ~95% with
+one, ≤10% when nothing is found).
