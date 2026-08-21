@@ -88,6 +88,42 @@ function cleanTeam(name: string): string {
   return name.replace(/\s+/g, " ").trim();
 }
 
+// Generic club-word tokens that carry no identity ("FC", "EC", "CR", ...).
+// Dropped before comparing two team names so "Cruzeiro EC" matches "Cruzeiro"
+// and "CR Flamengo" matches "Flamengo" regardless of name order/format.
+// DELIBERATELY EXCLUDES distinguishing words like "city", "united", "real" —
+// those are identity-bearing ("Manchester City" vs "Manchester United",
+// "Real Madrid" vs "Atlético Madrid") and dropping them would cross-match
+// different clubs.
+const GENERIC_TOKENS = new Set([
+  "fc", "cf", "ec", "sc", "ac", "cr", "cd", "ca", "afc", "cfc",
+  "club", "the", "de", "da", "do",
+]);
+
+function nameTokens(name: string): string[] {
+  return cleanTeam(name)
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((t) => t.length > 1 && !GENERIC_TOKENS.has(t));
+}
+
+// True when every identifying token of `want` appears among the tokens of
+// `have` (e.g. want="cr flamengo" -> ["flamengo"], have="flamengo" -> match;
+// want="cruzeiro ec" -> ["cruzeiro"], have="cruzeiro" -> match).
+function namesMatch(want: string, have: string): boolean {
+  const w = nameTokens(want);
+  if (w.length === 0) return false;
+  const h = new Set(nameTokens(have));
+  return w.every((tok) => {
+    if (h.has(tok)) return true;
+    // tolerate singular/plural and prefix truncation ("inter" ~ "internacional")
+    for (const cand of h) {
+      if (cand.startsWith(tok) || tok.startsWith(cand)) return true;
+    }
+    return false;
+  });
+}
+
 async function fetchTheSportsDbFixture(
   homeTeam: string | null,
   awayTeam: string | null,
@@ -113,18 +149,23 @@ async function fetchTheSportsDbFixture(
   ];
 
   // Find an event involving BOTH named sides with a real score.
-  const wantHome = (homeTeam ?? "").toLowerCase();
-  const wantAway = (awayTeam ?? "").toLowerCase();
+  // ORDER-INDEPENDENT: the question may phrase either side first ("Did A beat
+  // B?" vs "Did B lose to A?"), so each wanted name may sit in either the
+  // event's home or away slot. Requiring positional matches here would miss
+  // every reversed phrasing.
+  const wantHome = homeTeam ?? "";
+  const wantAway = awayTeam ?? "";
   const match = allEvents.find((e) => {
-    const h = String(e.strHomeTeam ?? "").toLowerCase();
-    const a = String(e.strAwayTeam ?? "").toLowerCase();
-    const hMatches = wantHome && (h.includes(wantHome) || wantHome.includes(h));
-    const aMatches = wantAway && (a.includes(wantAway) || wantAway.includes(a));
-    const hOnly = wantHome && !wantAway && hMatches;
-    const aOnly = wantAway && !wantHome && aMatches;
-    const both = hMatches && aMatches;
+    const h = String(e.strHomeTeam ?? "");
+    const a = String(e.strAwayTeam ?? "");
+    const homeInvolved = !!wantHome && (namesMatch(wantHome, h) || namesMatch(wantHome, a));
+    const awayInvolved = !!wantAway && (namesMatch(wantAway, h) || namesMatch(wantAway, a));
+    const involved =
+      wantHome && wantAway
+        ? homeInvolved && awayInvolved
+        : homeInvolved || awayInvolved;
     const hasScore = e.intHomeScore !== null && e.intAwayScore !== null;
-    return hasScore && (both || hOnly || aOnly);
+    return hasScore && involved;
   });
 
   if (!match) {
@@ -157,10 +198,9 @@ async function resolveTeamId(base: string, teamName: string | null): Promise<str
   const data = (await res.json()) as { teams?: { idTeam: string; strTeam: string }[] };
   const teams = data.teams ?? [];
   if (teams.length === 0) return null;
-  // Prefer an exact (case-insensitive) name match over a fuzzy one.
-  const want = teamName.toLowerCase();
-  const exact = teams.find((t) => t.strTeam.toLowerCase() === want);
-  return exact?.idTeam ?? teams[0].idTeam;
+  // Prefer a token-based name match over the API's first fuzzy hit.
+  const matched = teams.find((t) => namesMatch(teamName, t.strTeam));
+  return matched?.idTeam ?? teams[0].idTeam;
 }
 
 async function fetchRecentFinished(base: string, teamId: string): Promise<Record<string, unknown>[]> {
@@ -202,17 +242,20 @@ async function fetchFootballDataFixture(
   };
   const matches = data.matches ?? [];
 
-  // Match by team name (case-insensitive, substring-tolerant).
-  const wantHome = (homeTeam ?? "").toLowerCase();
-  const wantAway = (awayTeam ?? "").toLowerCase();
+  // Match by team name (token-based, order-independent — the question may
+  // name either side first, and either may sit in either fixture slot).
+  const wantHome = homeTeam ?? "";
+  const wantAway = awayTeam ?? "";
   const found = matches.find((m) => {
-    const h = m.homeTeam.name.toLowerCase();
-    const a = m.awayTeam.name.toLowerCase();
-    return (
-      (wantHome && (h.includes(wantHome) || wantHome.includes(h)) && wantAway && (a.includes(wantAway) || wantAway.includes(a))) ||
-      (wantHome && (h.includes(wantHome) || wantHome.includes(h)) && !wantAway) ||
-      (wantAway && (a.includes(wantAway) || wantAway.includes(a)) && !wantHome)
-    );
+    const h = m.homeTeam.name;
+    const a = m.awayTeam.name;
+    const homeInvolved = !!wantHome && (namesMatch(wantHome, h) || namesMatch(wantHome, a));
+    const awayInvolved = !!wantAway && (namesMatch(wantAway, h) || namesMatch(wantAway, a));
+    const involved =
+      wantHome && wantAway
+        ? homeInvolved && awayInvolved
+        : homeInvolved || awayInvolved;
+    return involved;
   });
 
   if (!found) {
